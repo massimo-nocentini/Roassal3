@@ -10,6 +10,13 @@ Class {
 	#category : #'Roassal3-Shapes-Tests'
 }
 
+{ #category : #tests }
+RSLabelTest >> latinScriptSpecialCharacters [
+
+	^ '…┄┅┆┇┈┉┊┋←↑→↓↔↕⇐⇒‐–—―¡¿ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż' 
+		  as: OrderedCollection
+]
+
 { #category : #running }
 RSLabelTest >> setUp [
 	super setUp.
@@ -35,22 +42,24 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeGlyphs [
 	RSMetricsProvider allSubclasses do: [ :metricClass | 
 		| c words mp can |
 		c := RSCanvas new.
-		words := self unicodeSymbols.
+		words := self latinScriptSpecialCharacters.
 		mp := metricClass new.
 		words do: [ :word | 
 			| label |
 			label := RSLabel new
 				         metricsProvider: mp;
-				         text: word;
-				         fontName: 'Menlo';
+				         text: word asString;
+				         fontName: 'Source Sans Pro';
 				         yourself.
 			c add: label ].
-		RSFlowLayout on: c nodes.
+		RSGridLayout on: c nodes withLineItemsCount: 20.
 		c showEncompassingRectangles.
 		can := RSCanvasController new.
 		can configuration maxScale: 40.
 		c @ can.
-		{metricClass . c} inspect ]
+		{ 
+			metricClass.
+			c } inspect ]
 ]
 
 { #category : #tests }
@@ -81,7 +90,7 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeWords [
 			label := RSLabel new
 				         metricsProvider: mp;
 				         text: word;
-				         fontName: 'Menlo';
+				         fontName: 'Source Sans Pro';
 				         yourself.
 			c add: label ].
 		RSFlowLayout on: c nodes.
