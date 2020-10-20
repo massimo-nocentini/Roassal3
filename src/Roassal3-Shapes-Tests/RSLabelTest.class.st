@@ -11,6 +11,20 @@ Class {
 }
 
 { #category : #tests }
+RSLabelTest class >> latinScriptSpecialCharacters [
+
+	^ '…┄┅┆┇┈┉┊┋←↑→↓↔↕⇐⇒‐–—―¡¿ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż' 
+		  as: OrderedCollection
+]
+
+{ #category : #utility }
+RSLabelTest class >> unicodeSymbols [
+
+	^ '| ¡ ¢ £ ¤ ¥ ¦ § ¨ © ª « ¬ ­ ® ¯ ° ± ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿ À Á Â Ã Ä Å Æ Ç È É Ê Ë Ì Í Î Ï Ð Ñ Ò Ó Ô Õ Ö × Ø Ù Ú Û Ü Ý Þ ß à á â ã ä å æ ç è é ê ë ì í î ï ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ Ā ā Ă ă Ą ą Ć ć Ĉ ĉ Ċ ċ Č č Ď ď Đ đ Ē ē Ĕ ĕ Ė ė Ę ę Ě ě Ĝ ĝ Ğ ğ Ġ ġ Ģ ģ Ĥ ĥ Ħ ħ Ĩ ĩ Ī ī Ĭ ĭ Į į İ ı Ĳ ĳ Ĵ ĵ Ķ ķ ĸ Ĺ ĺ Ļ ļ Ľ ľ Ŀ ŀ Ł ł Ń ń Ņ ņ Ň ň ŉ Ŋ ŋ Ō ō Ŏ ŏ Ő ő Œ œ Ŕ ŕ Ŗ ŗ Ř ř Ś ś Ŝ ŝ Ş ş Š š Ţ ţ Ť ť Ŧ ŧ Ũ ũ Ū ū Ŭ ŭ Ů ů Ű ű Ų ų Ŵ ŵ Ŷ ŷ Ÿ Ź ź Ż ż Ž ž Ơ ơ Ƣ ƣ Ʀ Ư ư Ƶ ƶ Ʒ Ǎ ǎ Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǟ ǟ Ǡ ǡ Ǣ ǣ Ǥ ǥ Ǧ ǧ Ǩ ǩ Ǫ ǫ Ǭ ǭ Ǯ ǯ ǰ Ǵ ǵ ʿ ˇ ˘ ˙ ˚ ˛ ˝ Ά Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϊ ϋ ό ύ ώ Ϙ ϙ Ϛ ϛ Ϝ ϝ Ϟ ϟ Ϡ ϡ ϴ ϵ Ё Ђ Ѓ Є Ѕ І Ї Ј Љ Њ Ћ Ќ Ў Џ А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я а б в г д е ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я ё ђ ѓ є ѕ і ї ј љ њ ћ ќ ў џ Ѣ ѣ Ѫ ѫ Ѳ ѳ Ѵ ѵ Ҁ ҁ Ґ ґ א ב ג ד ה ו ז ח ט י ך כ ל ם מ ן נ ס ע ף פ ץ צ ק ר ש ת ، ‐ – — ― ‖ ‗ ‘ ’ ‚ ‛ “ ” „ ‟ † ‡ ‥ … ‰ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ › ※ ‾ ⁄ ⁰ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾ ⁿ ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎ ₤ ₧ ₩ € ₽ ₽ ℃ ℅ ℉ № ℗ ℞ ℠ ™ Ω Å ⅓ ⅔ ⅕ ⅖ ⅗ ⅘ ⅙ ⅚ ⅛ ⅜ ⅝ ⅞ Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ ⅰ ⅱ ⅲ ⅳ ⅴ ⅵ ⅶ ⅷ ⅸ ⅹ ⅺ ⅻ ← ↑ → ↓ ↔ ↕ ⇐ ⇒ ⇔ ∀ ∂ ∃ ∅ ∆ ∇ ∈ ∋ ∏ ∑ − ∓ ∗ ∘ ∙ √ ∝ ∞ ∟ ∠ ∥ ∧ ∨ ∩ ∪ ∫ ∬ ∮ ∴ ∵ ∶ ∷ ∼ ∾ ≃ ≅ ≈ ≌ ≓ ≠ ≡ ≤ ≥ ≪ ≫ ≮ ≯ ⊂ ⊃ ⊆ ⊇ ⊙ ⊚ ⊥ ⋅ ⋮ ⋯ ⌂ ⌈ ⌉ ⌊ ⌋ ⌐ ⌒ ⌕ ⌠ ⌡ 〈 〉 ␣ ⑀ ⑁ ⑂ ⑃ ⑆ ⑇ ⑈ ⑉ ⒈ ⒉ ⒊ ⒋ ⒌ ⒍ ⒎ ⒏ ⒐ ─ ━ │ ┃ ┄ ┅ ┆ ┇ ┈ ┉ ┊ ┋ ┌ ┍ ┎ ┏ ┐ ┑ ┒ ┓ └ ┕ ┖ ┗ ┘ ┙ ┚ ┛ ├ ┝ ┠ ┣ ┤ ┥ ┨ ┫ ┬ ┯ ┰ ┳ ┴ ┷ ┸ ┻ ┼ ┿ ╂ ╋ ╱ ╲ ▀ ▄ █ ▌ ▐ ░ ▒ ▓ ■ □ ▢ ▣ ▤ ▥ ▦ ▧ ▨ ▩ ▪ ▬ ▭ ▲ △ ▶ ▷ ▼ ▽ ◀ ◁ ◆ ◇ ◊ ○ ◎ ● ◐ ◑ ◘ ◙ ◢ ◣ ★ ☆ ☜ ☞ ☺ ☻ ☼ ♀ ♂ ♠ ♡ ♢ ♣ ♩ ♪ ♫ ♭ ♮ ♯ ✓ ✗ ✠ 　 、 。 〃 〄 々 〆 〇 《 》 「 」 『 』 【 】 〒 〓 〔 〕 〖 〗 〜' 
+		  splitOn: ' '
+]
+
+{ #category : #tests }
 RSLabelTest >> benchMetricsProvidersOnUnicodeWords [
 
 	"This test case collects unicode symbols and render each one of them in a RSLabel,
@@ -43,13 +57,6 @@ RSLabelTest >> benchMetricsProvidersOnUnicodeWords [
 		10 timesRepeat: [ morph drawOn: form ] ]
 ]
 
-{ #category : #tests }
-RSLabelTest >> latinScriptSpecialCharacters [
-
-	^ '…┄┅┆┇┈┉┊┋←↑→↓↔↕⇐⇒‐–—―¡¿ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż' 
-		  as: OrderedCollection
-]
-
 { #category : #running }
 RSLabelTest >> setUp [
 	super setUp.
@@ -75,7 +82,7 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeGlyphs [
 	RSMetricsProvider allSubclasses do: [ :metricClass | 
 		| c words mp can |
 		c := RSCanvas new.
-		words := self latinScriptSpecialCharacters.
+		words := self class latinScriptSpecialCharacters.
 		mp := metricClass new.
 		words do: [ :word | 
 			| label |
@@ -106,7 +113,7 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeWords [
 		c := RSCanvas new.
 		c showEncompassingRectangles.
 		words := self
-			         unicodeStrings: self latinScriptSpecialCharacters
+			         unicodeStrings: self class latinScriptSpecialCharacters
 			         size: 20
 			         length: 10
 			         random: (Random seed: 11).
@@ -234,11 +241,4 @@ RSLabelTest >> unicodeStrings: chars size: n length: l random: r [
 				   | j |
 				   j := r nextInt: chars size.
 				   chars at: j ]) ]
-]
-
-{ #category : #utility }
-RSLabelTest >> unicodeSymbols [
-
-	^ '| ¡ ¢ £ ¤ ¥ ¦ § ¨ © ª « ¬ ­ ® ¯ ° ± ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿ À Á Â Ã Ä Å Æ Ç È É Ê Ë Ì Í Î Ï Ð Ñ Ò Ó Ô Õ Ö × Ø Ù Ú Û Ü Ý Þ ß à á â ã ä å æ ç è é ê ë ì í î ï ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ Ā ā Ă ă Ą ą Ć ć Ĉ ĉ Ċ ċ Č č Ď ď Đ đ Ē ē Ĕ ĕ Ė ė Ę ę Ě ě Ĝ ĝ Ğ ğ Ġ ġ Ģ ģ Ĥ ĥ Ħ ħ Ĩ ĩ Ī ī Ĭ ĭ Į į İ ı Ĳ ĳ Ĵ ĵ Ķ ķ ĸ Ĺ ĺ Ļ ļ Ľ ľ Ŀ ŀ Ł ł Ń ń Ņ ņ Ň ň ŉ Ŋ ŋ Ō ō Ŏ ŏ Ő ő Œ œ Ŕ ŕ Ŗ ŗ Ř ř Ś ś Ŝ ŝ Ş ş Š š Ţ ţ Ť ť Ŧ ŧ Ũ ũ Ū ū Ŭ ŭ Ů ů Ű ű Ų ų Ŵ ŵ Ŷ ŷ Ÿ Ź ź Ż ż Ž ž Ơ ơ Ƣ ƣ Ʀ Ư ư Ƶ ƶ Ʒ Ǎ ǎ Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǟ ǟ Ǡ ǡ Ǣ ǣ Ǥ ǥ Ǧ ǧ Ǩ ǩ Ǫ ǫ Ǭ ǭ Ǯ ǯ ǰ Ǵ ǵ ʿ ˇ ˘ ˙ ˚ ˛ ˝ Ά Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϊ ϋ ό ύ ώ Ϙ ϙ Ϛ ϛ Ϝ ϝ Ϟ ϟ Ϡ ϡ ϴ ϵ Ё Ђ Ѓ Є Ѕ І Ї Ј Љ Њ Ћ Ќ Ў Џ А Б В Г Д Е Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я а б в г д е ж з и й к л м н о п р с т у ф х ц ч ш щ ъ ы ь э ю я ё ђ ѓ є ѕ і ї ј љ њ ћ ќ ў џ Ѣ ѣ Ѫ ѫ Ѳ ѳ Ѵ ѵ Ҁ ҁ Ґ ґ א ב ג ד ה ו ז ח ט י ך כ ל ם מ ן נ ס ע ף פ ץ צ ק ר ש ת ، ‐ – — ― ‖ ‗ ‘ ’ ‚ ‛ “ ” „ ‟ † ‡ ‥ … ‰ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ › ※ ‾ ⁄ ⁰ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾ ⁿ ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎ ₤ ₧ ₩ € ₽ ₽ ℃ ℅ ℉ № ℗ ℞ ℠ ™ Ω Å ⅓ ⅔ ⅕ ⅖ ⅗ ⅘ ⅙ ⅚ ⅛ ⅜ ⅝ ⅞ Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ ⅰ ⅱ ⅲ ⅳ ⅴ ⅵ ⅶ ⅷ ⅸ ⅹ ⅺ ⅻ ← ↑ → ↓ ↔ ↕ ⇐ ⇒ ⇔ ∀ ∂ ∃ ∅ ∆ ∇ ∈ ∋ ∏ ∑ − ∓ ∗ ∘ ∙ √ ∝ ∞ ∟ ∠ ∥ ∧ ∨ ∩ ∪ ∫ ∬ ∮ ∴ ∵ ∶ ∷ ∼ ∾ ≃ ≅ ≈ ≌ ≓ ≠ ≡ ≤ ≥ ≪ ≫ ≮ ≯ ⊂ ⊃ ⊆ ⊇ ⊙ ⊚ ⊥ ⋅ ⋮ ⋯ ⌂ ⌈ ⌉ ⌊ ⌋ ⌐ ⌒ ⌕ ⌠ ⌡ 〈 〉 ␣ ⑀ ⑁ ⑂ ⑃ ⑆ ⑇ ⑈ ⑉ ⒈ ⒉ ⒊ ⒋ ⒌ ⒍ ⒎ ⒏ ⒐ ─ ━ │ ┃ ┄ ┅ ┆ ┇ ┈ ┉ ┊ ┋ ┌ ┍ ┎ ┏ ┐ ┑ ┒ ┓ └ ┕ ┖ ┗ ┘ ┙ ┚ ┛ ├ ┝ ┠ ┣ ┤ ┥ ┨ ┫ ┬ ┯ ┰ ┳ ┴ ┷ ┸ ┻ ┼ ┿ ╂ ╋ ╱ ╲ ▀ ▄ █ ▌ ▐ ░ ▒ ▓ ■ □ ▢ ▣ ▤ ▥ ▦ ▧ ▨ ▩ ▪ ▬ ▭ ▲ △ ▶ ▷ ▼ ▽ ◀ ◁ ◆ ◇ ◊ ○ ◎ ● ◐ ◑ ◘ ◙ ◢ ◣ ★ ☆ ☜ ☞ ☺ ☻ ☼ ♀ ♂ ♠ ♡ ♢ ♣ ♩ ♪ ♫ ♭ ♮ ♯ ✓ ✗ ✠ 　 、 。 〃 〄 々 〆 〇 《 》 「 」 『 』 【 】 〒 〓 〔 〕 〖 〗 〜' 
-		  splitOn: ' '
 ]
