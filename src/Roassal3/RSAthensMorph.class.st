@@ -773,14 +773,15 @@ RSAthensMorph >> shapeWithActionForPositionInPixels: point [
 
 { #category : #drawing }
 RSAthensMorph >> showRectanglesIfNecessary: shapes [
+
 	roassalCanvas showRectangles ifFalse: [ ^ self ].
-	
-	renderer canvas setPaint: (Color blue alpha: 0.2).
-	shapes do: [ :shape | | r |
+
+	renderer canvas setPaint: (Color fromHexString: 'FFD9A8FF').
+	shapes do: [ :shape | 
+		| r |
 		r := shape encompassingRectangle.
 		r := r origin asFloatPoint corner: r corner asFloatPoint.
-		renderer canvas drawShape: r.
-		].
+		renderer canvas drawShape: r ]
 ]
 
 { #category : #signaling }

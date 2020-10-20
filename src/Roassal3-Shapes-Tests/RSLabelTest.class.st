@@ -11,6 +11,39 @@ Class {
 }
 
 { #category : #tests }
+RSLabelTest >> benchMetricsProvidersOnUnicodeWords [
+
+	"This test case collects unicode symbols and render each one of them in a RSLabel,
+	 using a different metric class. We aim to draw its encompassing rectangle."
+
+	| words |
+	words := self
+		         unicodeStrings: self latinScriptSpecialCharacters
+		         size: 20
+		         length: 10
+		         random: (Random seed: 11).
+
+
+	RSMetricsProvider allSubclasses do: [ :metricProviderClass | 
+		| c mp can aRSCanvas morph form metricProvider labelString |
+		aRSCanvas := RSCanvas new.
+		metricProvider := metricProviderClass new.
+		labelString := 'a label'.
+
+		1 to: 1000 do: [ :i | 
+			aRSCanvas add: (RSLabel new
+					 metricsProvider: metricProvider;
+					 model: i;
+					 fontSize: 8 + (i % 16);
+					 text: labelString;
+					 yourself) ].
+		RSGridLayout on: aRSCanvas nodes withLineItemsCount: 20.
+		morph := aRSCanvas createMorph.
+		form := FormCanvas extent: morph extent.
+		10 timesRepeat: [ morph drawOn: form ] ]
+]
+
+{ #category : #tests }
 RSLabelTest >> latinScriptSpecialCharacters [
 
 	^ '…┄┅┆┇┈┉┊┋←↑→↓↔↕⇐⇒‐–—―¡¿ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż' 
@@ -68,20 +101,13 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeWords [
 	"This test case collects unicode symbols and render each one of them in a RSLabel,
 	 using a different metric class. We aim to draw its encompassing rectangle."
 
-	self
-		assert:
-		(self unicodeStrings: 20 length: 10 random: (Random seed: 11))
-		equals:
-			#( '|ДǮÅ└ώюХЩƷ' 'ŔⅷĔζ―⒊θåœ∆' '‘דЮšǪ⋅©Ŀץⅷ' '«ι┸ѓï‴♢˘▐¯' 'ⅺ⌕☞ǐĩ⌂☜∂〜⌈'
-			   'ІŲ‸³☻⒎Ξ┤¡℉' '☺ґ⅖ш┎Ј▽〗Ё〈' 'цŚÇÊ⒊ùΝאγЩ' '÷εįעא▷ñ〆〔≈' 'לέ┕₆тǩќų♪ן'
-			   '▤ęģ♩ⅡǑ⒉Ψ┬в' 'чŞò⋯┣Ÿ∨Δ┕Љ' '|°»וǠ⌕ǵ₁【к' '∨Į₍мũźо⁰Оǥ' 'йшā⁹⑁нטŐ≈α'
-			   'öסλłъ▲ρħ│⒏' '⇐ŦǍŢǮ▪Ⅱיϴы' 'Б−«≫≥¯≫е‸¦' '┇。█ŬĪάЬ〗∞Ч' 'ķל‥〓ǰåУ♣⒎Û' ).
-
 	RSMetricsProvider allSubclasses do: [ :metricClass | 
 		| c words mp can |
 		c := RSCanvas new.
+		c showEncompassingRectangles.
 		words := self
-			         unicodeStrings: 20
+			         unicodeStrings: self latinScriptSpecialCharacters
+			         size: 20
 			         length: 10
 			         random: (Random seed: 11).
 		mp := metricClass new.
@@ -93,8 +119,8 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeWords [
 				         fontName: 'Source Sans Pro';
 				         yourself.
 			c add: label ].
-		RSFlowLayout on: c nodes.
-		c showEncompassingRectangles.
+		RSGridLayout on: c nodes withLineItemsCount: 2.
+
 		can := RSCanvasController new.
 		can configuration maxScale: 40.
 		c @ can.
@@ -168,11 +194,40 @@ RSLabelTest >> testUnderlineStruckout [
 	self assert: label isUnderlined.
 ]
 
-{ #category : #utility }
-RSLabelTest >> unicodeStrings: n length: l random: r [
+{ #category : #tests }
+RSLabelTest >> testWordsComposedOfLatinScriptSymbols [
 
-	| chars |
-	chars := self unicodeSymbols.
+	self
+		assert: (self
+				 unicodeStrings: self latinScriptSpecialCharacters
+				 size: 20
+				 length: 10
+				 random: (Random seed: 11))
+		equals:
+			#( '…ÍÈ┋úģĶÏïĎ' 'ÆŕàėŃțĒ⇒Æß' 'ŃłıāÈť┅ǎŀŕ' '┅ĒŨķ–ŅŶÉų┆' 'ŘţŸđÃŢŸßżŢ'
+			   'ĥćņ┇ŸÜĚŰ…Õ' 'ŸŁőĵÚĥŴżĤÞ' 'Ĵæ←←ț―Ěłėï' '―ėãŀłū–ŽŻš' 'ľęúóįðĺćŶĿ'
+			   'ůÁâŶøđțĘűĪ' 'ĵĀ–ťŰĈŞËúÌ' '…┆┉ĽĐţèòŻĮ' 'ŞãÔĮçĉĮÖÎď' 'īĵ¿ÒþĮĽăšĖ'
+			   '—ŀēĄĵūĜâüÜ' 'ẞÇĎāÈŪøľğĶ' 'ìś┅șȘ┆șĪņ┄' 'ÙźŲçÃęïżŝÏ' 'åľňŻè⇒îŶÜ↔' )
+]
+
+{ #category : #tests }
+RSLabelTest >> testWordsComposedOfUnicodeSymbols [
+
+	self
+		assert: (self
+				 unicodeStrings: self unicodeSymbols
+				 size: 20
+				 length: 10
+				 random: (Random seed: 11))
+		equals:
+			#( '|ДǮÅ└ώюХЩƷ' 'ŔⅷĔζ―⒊θåœ∆' '‘דЮšǪ⋅©Ŀץⅷ' '«ι┸ѓï‴♢˘▐¯' 'ⅺ⌕☞ǐĩ⌂☜∂〜⌈'
+			   'ІŲ‸³☻⒎Ξ┤¡℉' '☺ґ⅖ш┎Ј▽〗Ё〈' 'цŚÇÊ⒊ùΝאγЩ' '÷εįעא▷ñ〆〔≈' 'לέ┕₆тǩќų♪ן'
+			   '▤ęģ♩ⅡǑ⒉Ψ┬в' 'чŞò⋯┣Ÿ∨Δ┕Љ' '|°»וǠ⌕ǵ₁【к' '∨Į₍мũźо⁰Оǥ' 'йшā⁹⑁нטŐ≈α'
+			   'öסλłъ▲ρħ│⒏' '⇐ŦǍŢǮ▪Ⅱיϴы' 'Б−«≫≥¯≫е‸¦' '┇。█ŬĪάЬ〗∞Ч' 'ķל‥〓ǰåУ♣⒎Û' )
+]
+
+{ #category : #utility }
+RSLabelTest >> unicodeStrings: chars size: n length: l random: r [
 
 	^ (1 to: n) collect: [ :i | 
 		  '' join: ((1 to: l) collect: [ :_ | 
