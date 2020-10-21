@@ -17,6 +17,14 @@ RSLabelTest class >> latinScriptSpecialCharacters [
 		  as: OrderedCollection
 ]
 
+{ #category : #tests }
+RSLabelTest class >> latinScriptSpecialCharactersWithStandardOnes [
+
+	^ self latinScriptSpecialCharacters
+	  , ('abcdefghijklmnopqrstxyzwvABCDEFGHIJKLMNOPQRSTXYZWV' as:
+			   OrderedCollection)
+]
+
 { #category : #utility }
 RSLabelTest class >> unicodeSymbols [
 
@@ -113,7 +121,8 @@ RSLabelTest >> testCairoFitMetricsProviderOnUnicodeWords [
 		c := RSCanvas new.
 		c showEncompassingRectangles.
 		words := self
-			         unicodeStrings: self class latinScriptSpecialCharacters
+			         unicodeStrings:
+			         self class latinScriptSpecialCharactersWithStandardOnes
 			         size: 20
 			         length: 10
 			         random: (Random seed: 11).
