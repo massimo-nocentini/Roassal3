@@ -335,11 +335,13 @@ RSAthensMorph >> drawShapes [
 		renderer canvas: athensCanvas.
 		canvasRect := roassalCanvas visibleRectangle.
 		
+		
+		self showRectanglesIfNecessary: roassalCanvas shapes.
+		
 		roassalCanvas shapes do: [ :roassalShape | 
 			(roassalShape intersects: canvasRect)
 				ifTrue: [ roassalShape accept: renderer ] ].
 		
-		self showRectanglesIfNecessary: roassalCanvas shapes.
 		"We display the elements that are _NOT_ subject to the camera"
 		athensCanvas pathTransform loadIdentity scaleBy: 1.0001.
 		roassalCanvas fixedShapes do: [ :roassalShape | 
