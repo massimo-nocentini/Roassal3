@@ -1,7 +1,7 @@
 Class {
 	#name : #RSDocumapsMetricsProvider,
 	#superclass : #RSMetricsProvider,
-	#instVars : [
+	#classVars : [
 		'fontsExtentCache'
 	],
 	#category : #'Roassal3-Shapes-Text'
@@ -10,10 +10,19 @@ Class {
 { #category : #hooks }
 RSDocumapsMetricsProvider >> extentsOf: aRSLabel [
 
-	^ (fontsExtentCache
-		   at: aRSLabel font
-		   ifAbsentPut: [ DrsFontsExtentCacheRecord new font: aRSLabel font ]) 
-		  computeTextExtentsOf: aRSLabel text
+	| fc result |
+	fc := fontsExtentCache
+		      at: aRSLabel font
+		      ifAbsentPut: [ 
+		      DrsFontExtentCacheRecord new font: aRSLabel font ].
+	"
+	result := OrderedCollection new: aRSLabel text size.
+	aRSLabel text do: [ :each | result add: (fc extentsOf: each) ].
+	^ RSTextExtents new
+		  from: result;
+		  yourself"
+
+	^ fc computeTextExtentsOf: aRSLabel text
 ]
 
 { #category : #hooks }
