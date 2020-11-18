@@ -261,7 +261,7 @@ RSLabelTest >> testWordsComposedOfLatinScriptSymbols [
 
 	self
 		assert: (self
-				 unicodeStrings: self latinScriptSpecialCharacters
+				 unicodeStrings: self class latinScriptSpecialCharacters
 				 size: 20
 				 length: 10
 				 random: (Random seed: 11))
@@ -277,7 +277,7 @@ RSLabelTest >> testWordsComposedOfUnicodeSymbols [
 
 	self
 		assert: (self
-				 unicodeStrings: self unicodeSymbols
+				 unicodeStrings: self class unicodeSymbols
 				 size: 20
 				 length: 10
 				 random: (Random seed: 11))
