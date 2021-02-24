@@ -47,6 +47,22 @@ RSCanvas >> accept: visitor [
 	visitor visitCanvas: self
 ]
 
+{ #category : #'adding nodes edges' }
+RSCanvas >> add: aShape [
+	"Main method to add a shape to a shape to a canvas"
+	self
+		assert: aShape notNil
+		description: 'Nil cannot be added to a canvas'.
+		
+	self 
+		assert: (aShape class inheritsFrom: RSShape)
+		description: 'A shape must be provided'.
+	aShape 
+		addedIn: self;
+		renderOn: self.
+	^ aShape
+]
+
 { #category : #animations }
 RSCanvas >> addAnimation: anAnimation [
 	"Schedule an animation, and run it until its completion"
@@ -63,7 +79,8 @@ RSCanvas >> addBasicShape: aShape [
 
 { #category : #'adding removing shapes' }
 RSCanvas >> addFixedShape: aShape [
-	"Add a shape and make the shape fixed. It is therefore not subject to the camera.
+	"This is a private method. Should not be called directly (use RSShape>>setAsFixed instead). 
+Add a shape and make the shape fixed. It is therefore not subject to the camera.
 ```
 c := RSCanvas new.
 
@@ -102,8 +119,17 @@ RSCanvas >> announce: anEventOrAnEventClass [
 	announcer announce: theEventToSend.
 ]
 
+{ #category : #announcer }
+RSCanvas >> announcementClasses [
+	^ {RSCanvasEvent. RSShapeEvent} 
+		flatCollect: [ :cls | 
+			cls withAllSubclasses reject: [ :subcls|
+				subcls hasSubclasses ] ]
+]
+
 { #category : #accessing }
 RSCanvas >> basicRectangle [
+	"Return a rectangle encompassing all the elements"
 	^ Rectangle origin: 0@0 extent: self extent
 ]
 
@@ -130,6 +156,7 @@ RSCanvas >> camera: aCamera [
 
 { #category : #accessing }
 RSCanvas >> canvas [
+	"Useful method to have it polymorphic with shapes"
 	^ self
 ]
 
@@ -144,7 +171,7 @@ RSCanvas >> clearBackground: aBool [
 	"Determine if the canvas must be cleaned at each screen refresh. Per default it is, which means that if some shapes are translated, a footprint is left. This is useful to realize interesting visual effects.
 	
 For example, evaluate the following script:
-```Smalltalk
+```
 c := RSCanvas new.
 c clearBackground: false.
 (1 to: 10) do: [ :i | c add: (RSEllipse new size: 20) ]. 
@@ -180,13 +207,23 @@ c
 	color := Color colorFrom: aColor.
 ]
 
-{ #category : #opening }
+{ #category : #private }
 RSCanvas >> createMorph [
 	"Create a Morph that contains myself. This is a private method"
 	morph := RSAthensMorph new. 
 	morph renderer: RSAthensRenderer new.
 	morph canvas: self.
 	^ morph
+]
+
+{ #category : #accessing }
+RSCanvas >> deepNodes [
+	"Return the list of all the nodes contained in the visualization"
+	| result |
+	result := OrderedCollection new. 
+	self nodes do: [ :n |
+		n addRecursivelyIn: result ].
+	^ result
 ]
 
 { #category : #'looking up shapes' }
@@ -224,6 +261,7 @@ RSCanvas >> extent [
 
 { #category : #accessing }
 RSCanvas >> extent: aPoint [
+	"Set the extent of the canvas. This method is called when a window is resized. An event is raised when the extension happens. "
 	| evt |
 	evt := RSExtentChangedEvent new
 		shape: self;
@@ -290,11 +328,13 @@ RSCanvas >> isShape [
 
 { #category : #accessing }
 RSCanvas >> morph [
+	"Return the Athens morph used by the canvas to render the visualization"
 	^ morph
 ]
 
 { #category : #accessing }
 RSCanvas >> morph: aMorph [
+	"Set the RSAthensMorph. The canvas will directly render in the morph"
 	morph := aMorph
 ]
 
@@ -302,6 +342,11 @@ RSCanvas >> morph: aMorph [
 RSCanvas >> numberOfAnimations [
 	"Return the number of animations contained in the canvas"
 	^ animations size
+]
+
+{ #category : #'accessing - computed' }
+RSCanvas >> numberOfDeepNodes [
+	^ self deepNodes size
 ]
 
 { #category : #accessing }
@@ -355,6 +400,7 @@ RSCanvas >> openWithTitle: aTitleAsString [
 
 { #category : #accessing }
 RSCanvas >> parent [
+	"A canvas has no parent. Shapes may have a parent other than the canvas when they are nested"
 	^ self
 ]
 
@@ -401,7 +447,7 @@ RSCanvas >> privateShapes: aCollection [
 	shapes := aCollection
 ]
 
-{ #category : #'shapes controling' }
+{ #category : #'shapes ordering' }
 RSCanvas >> pushBack: aShape [
 	"Shapes are ordered in the same order they are inserted. The order can be changed using #pushFront: and #pushBack.
 
@@ -412,7 +458,7 @@ shape1 := RSEllipse new size: 50; color: #red.
 shape2 := RSEllipse new size: 50; color: #blue.
 shape2 translateBy: -25@0.
 c add: shape1; add: shape2.
-c pushFront: shape1.
+c pushBack: shape2.
 c.
 ```	
 "
@@ -425,7 +471,7 @@ c.
 		addFirst: aShape.
 ]
 
-{ #category : #'shapes controling' }
+{ #category : #'shapes ordering' }
 RSCanvas >> pushFront: aShape [
 	"Shapes are ordered in the same order they are inserted. The order can be changed using #pushFront: and #pushBack.
 
@@ -524,11 +570,6 @@ The expression `c shapes` returns a `RSGroup` containing both `s1` and `s2`
 	^ shapes copy
 ]
 
-{ #category : #accessing }
-RSCanvas >> shapes: aRSGroup [
-	shapes := aRSGroup
-]
-
 { #category : #'accessing - shapes' }
 RSCanvas >> shapesFromModels: objects [
 	"Return shapes that corresponds to the objects provided as parameter. If none is found, then return an empty collection"
@@ -554,6 +595,7 @@ RSCanvas >> signalUpdate [
 
 { #category : #accessing }
 RSCanvas >> topParent [
+	"A top parent is a canvas"
 	^ self
 ]
 

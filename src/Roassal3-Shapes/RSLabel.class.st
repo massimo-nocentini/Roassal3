@@ -30,7 +30,7 @@ c
 
 ```
 
-For more fonts of your system use: `FreeTypeFontProvider current updateFromSystem`.
+For more fonts of your system use: `FreeTypeFontProvider current updateFromSystem families`.
 "
 Class {
 	#name : #RSLabel,
@@ -90,9 +90,8 @@ RSLabel >> accept: visitor [
 
 { #category : #'managing font' }
 RSLabel >> bold [
-"
-Make the font bold
-
+"Make the label bold
+```
 | c lbl1 lbl2 |
 c := RSCanvas new.
 lbl1 := RSLabel new bold; text: 'hello'.
@@ -101,6 +100,7 @@ lbl2 := RSLabel new text: 'world'.
 c addShape: lbl2.
 RSLocation new below; move: lbl2 on: lbl1.
 c open
+```
 "
 	self emphasisAdd: TextEmphasis bold.
 ]
@@ -149,6 +149,7 @@ RSLabel >> emphasis: aTextEmphasis [
 c := RSCanvas new.
 lbl := RSLabel new text: 'hello'; emphasis: TextEmphasis italic.
 c addShape: lbl.
+c @ RSCanvasController.
 c open
 "
 	emphasis = aTextEmphasis ifTrue: [ ^ self ].
@@ -267,9 +268,8 @@ RSLabel >> isUnderlined [
 
 { #category : #'managing font' }
 RSLabel >> italic [
-"
-Make the font italic
-
+	"Make the label italic
+```
 | c lbl1 lbl2 |
 c := RSCanvas new.
 lbl1 := RSLabel new italic; text: 'hello'.
@@ -277,7 +277,9 @@ c addShape: lbl1.
 lbl2 := RSLabel new text: 'world'.
 c addShape: lbl2.
 RSLocation new below; move: lbl2 on: lbl1.
+c @ RSCanvasController.
 c open
+```
 "
 	self emphasisAdd: TextEmphasis italic.
 ]
@@ -294,6 +296,7 @@ RSLabel >> metricsProvider: aRSMetricsProvider [
 	 The argument must be a subclass of RSMetricsProvider.
 	
 	For example:
+	
 ```Smalltalk
 metricsProvider := RSCairoMetricsProvider new.
 
@@ -304,9 +307,8 @@ c := RSCanvas new.
 c addAll: labels.
 RSFlowLayout on: labels.
 c @ RSCanvasController
+c open
 ```
-	
-	
 	"
 	metricsProvider := aRSMetricsProvider.
 	self resetCache.
@@ -360,6 +362,20 @@ RSLabel >> sessionChanged [
 
 { #category : #'managing font' }
 RSLabel >> struckOut [
+	"Make the label strickethrough
+	
+```
+| c lbl1 lbl2 |
+c := RSCanvas new.
+lbl1 := RSLabel new struckOut; text: 'hello'.
+c addShape: lbl1.
+lbl2 := RSLabel new text: 'world'.
+c addShape: lbl2.
+RSLocation new below; move: lbl2 on: lbl1.
+c @ RSCanvasController.
+c open
+```
+"
 	self emphasisAdd: TextEmphasis struckOut.
 ]
 
@@ -397,9 +413,8 @@ RSLabel >> textWidth [
 
 { #category : #'managing font' }
 RSLabel >> underline [
-"
-Make the font underlined
-
+	"Make the label underlined
+```
 | c lbl1 lbl2 |
 c := RSCanvas new.
 lbl1 := RSLabel new underline; text: 'hello'.
@@ -407,7 +422,9 @@ c addShape: lbl1.
 lbl2 := RSLabel new text: 'world'.
 c addShape: lbl2.
 RSLocation new below; move: lbl2 on: lbl1.
+c @ RSCanvasController.
 c open
+```
 "
 	self emphasisAdd: TextEmphasis underlined.
 ]

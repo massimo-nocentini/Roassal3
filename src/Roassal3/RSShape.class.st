@@ -50,13 +50,59 @@ RSShape class >> model: anObject [
 	^ self new model: anObject
 ]
 
+{ #category : #accessing }
+RSShape class >> model: anObject forIt: aOneArgBlock [
+	"Create an instance of myself with anObject as model. The second argument is a one arg block that is used to initialize the shape"
+	| r |
+	r := self new.
+	r model: anObject.
+	aOneArgBlock rsValue: r.
+	^ r
+]
+
+{ #category : #accessing }
+RSShape class >> models: someObjects [
+	"Create a RSGroup made of shapes. Each shape has an element of the argument as model."
+	^ someObjects collect: [ :obj | self model: obj ] as: RSGroup.
+
+]
+
+{ #category : #accessing }
+RSShape class >> models: someObjects forEach: twoArgBlock [
+	"Create a RSGroup made of shapes. Each shape has an element of the argument as model. The second argument is used to initialize the shape.
+	
+	For example:
+```
+c := RSCanvas new.
+
+classes := RSCircle models: Collection withAllSubclasses forEach: [ :aShape :aClass | aShape size: aClass numberOfMethods ].
+
+c addAll: classes.
+RSFlowLayout on: classes.
+c @ RSCanvasController
+```
+	"
+
+	| r |
+	r := someObjects collect: [ :obj | self model: obj ] as: RSGroup.
+	r with: someObjects do: [ :aShape :anObject | twoArgBlock value: aShape value: anObject ].
+	^ r
+
+]
+
 { #category : #adding }
 RSShape >> accept: aVisitor [
 	self subclassResponsibility 
 ]
 
 { #category : #adding }
+RSShape >> addRecursivelyIn: aCollection [
+	aCollection add: self
+]
+
+{ #category : #'private - adding' }
 RSShape >> addedIn: aCanvas [
+	"This is a private method"
 	| evt |
 	self isFixed
 		ifTrue: [ aCanvas addFixedShape: self ]
@@ -79,6 +125,12 @@ RSShape >> announce: anEventOrAnEventClassOrABlock [
 	announcer announce: theEventToSend.
 ]
 
+{ #category : #announcer }
+RSShape >> announcementClasses [
+	^ RSShapeEvent withAllSubclasses 
+		reject: [ :subcls| subcls hasSubclasses ]
+]
+
 { #category : #border }
 RSShape >> border [
 	^ border
@@ -96,6 +148,21 @@ RSShape >> borderColor [
 
 { #category : #border }
 RSShape >> borderColor: aColor [
+	"Set a border with the provided color. For example:
+
+```
+c := RSCanvas new.
+r := Random seed: 42.
+40 timesRepeat: [
+	box := RSBox new width: (r nextInteger: 80); height: (r nextInteger: 80); color: Color gray; cornerRadius: 10.
+	box borderColor: #black.
+	box color: Color random translucent.
+	box translateTo: (r nextInteger: 200) @ (r nextInteger: 200).
+	c add: box.
+].
+c @ RSCanvasController.
+c open
+```"
 	border ifNil: [ self withBorder ].
 	self border color: aColor
 ]
@@ -175,17 +242,17 @@ RSShape >> copyWithAnnouncer [
 		yourself
 ]
 
-{ #category : #adding }
+{ #category : #'looking up shapes' }
 RSShape >> deepShapeFromModel: anObject result: result [
 	self model = anObject ifTrue: [ result add: self ]
 ]
 
-{ #category : #adding }
+{ #category : #'looking up shapes' }
 RSShape >> deepShapesFromModel: anObject result: result [
 	self model = anObject ifTrue: [ result add: self ]
 ]
 
-{ #category : #adding }
+{ #category : #'looking up shapes' }
 RSShape >> deepShapesFromModels: someObjects result: result [
 	(someObjects includes: self model) ifTrue: [ result add: self ]
 ]
@@ -231,6 +298,12 @@ RSShape >> hasChildren [
 RSShape >> hasEventCallback [
 	"Return true if at least one event callback has been added to the shape"
 	^ announcer notNil and: [ announcer numberOfSubscriptions > 0 ]
+]
+
+{ #category : #testing }
+RSShape >> hasModel [
+	"Return true if a model is set in the shape. Return false otherwise"
+	^ model notNil
 ]
 
 { #category : #accessing }
@@ -291,11 +364,6 @@ RSShape >> isInACanvas [
 { #category : #testing }
 RSShape >> isNode [
 	^ false
-]
-
-{ #category : #'accessing - attributes' }
-RSShape >> isSLeaf [
-	^ self schildren isEmpty
 ]
 
 { #category : #testing }
@@ -359,8 +427,7 @@ RSShape >> path [
 
 { #category : #path }
 RSShape >> path: aPath [
-	"-Keeps an AthensCairoPath, 
-	-this value is reset when the image is restarted"
+	"Set the path of the shape. It set an AthensCairoPath. Note that this value is set to nil when the Pharo image is restarted"
 	path := aPath
 ]
 
@@ -375,9 +442,7 @@ RSShape >> postCopy [
 
 { #category : #printing }
 RSShape >> printOn: stream [
-	| model |
 	super printOn: stream.
-	model := self model.
 	model ifNil: [ ^ self ].
 	stream << '('; << model asString; << ')'.
 ]
@@ -415,17 +480,6 @@ RSShape >> resetBBox [
 { #category : #path }
 RSShape >> resetPath [
 	path := nil
-]
-
-{ #category : #'accessing - attributes' }
-RSShape >> schildren [
-	^ self propertyAt: #schildren
-]
-
-{ #category : #'accessing - attributes' }
-RSShape >> schildren: anObject [
-	"children is used by tree builders usefull to relationate hierarchy visualizations"
-	self propertyAt: #schildren put: anObject
 ]
 
 { #category : #path }
@@ -481,17 +535,6 @@ RSShape >> signalUpdate [
 	"Refresh the canvas"
 	parent ifNil: [ ^ self ].
 	parent signalUpdate
-]
-
-{ #category : #'accessing - attributes' }
-RSShape >> sparent [
-	^ self propertyAt: #sparent
-]
-
-{ #category : #'accessing - attributes' }
-RSShape >> sparent: anObject [
-	"children is used by tree builders usefull to relationate hierarchy visualizations"
-	self propertyAt: #sparent put: anObject
 ]
 
 { #category : #accessing }

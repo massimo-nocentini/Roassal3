@@ -119,14 +119,16 @@ RSForceBasedLayout >> currentQuadtree [
 ]
 
 { #category : #hook }
-RSForceBasedLayout >> doExecute: nodeElements [
-	self nodes: nodeElements.
+RSForceBasedLayout >> doExecute: nodeShapes [
+	nodeShapes do: [ :n | n updateLinesOFF ].
+	self nodes: nodeShapes.
 	self start.
 	self shouldUseProgressBar
 		ifTrue: [ self runLayoutInJob ]
 		ifFalse: [ self runLayoutSimply ].
 	alpha := 0.
-	nodes do: [ :e | translator translateTopLeftOf: e to: e position ]
+	nodes do: [ :e | translator translateTopLeftOf: e to: e position ].
+	nodeShapes do: [ :n | n updateLinesON. n connectedLines do: #update ].
 ]
 
 { #category : #'public - configuration' }
@@ -370,7 +372,7 @@ RSForceBasedLayout >> stepEdgeForces [
 		fp := from position.
 		tp := to position.
 		pd := tp - fp.
-		len := tp dist: fp.
+		len := tp distanceTo: fp.
 		(len closeTo: 0) ifFalse: [
 			len := alpha * (each strength) * (len - (each length)) / len.
 			pd := pd * len.

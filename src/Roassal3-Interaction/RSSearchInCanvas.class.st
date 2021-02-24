@@ -4,34 +4,22 @@ You can use `RSSearchInCanvas` as follows (press the S key and the R key):
 
 ```Smalltalk
 c := RSCanvas new.
-
 shapes := Collection withAllSubclasses collect: [ :n | RSEllipse new size: 20; model: n ] as: RSGroup.
-
 c addAll: shapes.
-
 shapes @ RSPopup.
-
 eb := RSEdgeBuilder line.
 eb canvas: c.
 eb connectFrom: #superclass.
-
 RSTreeLayout on: shapes.
-
-con := RSCanvasController new.
-con addInteraction: RSSearchInCanvas new.
-c @ con.
+c @ RSCanvasController.
 ```
 
 ```Smalltalk
 c := RSCanvas new.
-
 shapes := (1 to: 10) collect: [ :n | RSEllipse new size: 20; model: n ] as: RSGroup.
-
 c addAll: shapes.
 RSGridLayout on: shapes.
-
 shapes @ RSPopup.
-
 con := RSCanvasController new.
 con addInteraction: RSSearchInCanvas new.
 c @ con.
@@ -212,11 +200,11 @@ RSSearchInCanvas >> obtainRegExpToHighlight [
 { #category : #public }
 RSSearchInCanvas >> onShape: aCanvas [
 	aCanvas 
-		when: RSKeyDown do: [ :evt | self processKeyDown: evt ]
+		when: RSKeyUp do: [ :evt | self processKeyUp: evt ]
 ]
 
 { #category : #private }
-RSSearchInCanvas >> processKeyDown: evt [
+RSSearchInCanvas >> processKeyUp: evt [
 	| keyName |
 	self canvas: evt canvas.
 	keyName := evt keyName.

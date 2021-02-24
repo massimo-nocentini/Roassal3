@@ -2,7 +2,7 @@
 I am a composite shapes. I can therefore contain other shapes.
 
 Here is a simple example:
--=-=-=
+```
 c := RSCanvas new.
 
 box := RSBox new width: 40; height: 10; color: Color blue.
@@ -13,15 +13,15 @@ composite shapes: { label . box }.
 composite @ RSDraggable.
 
 c add: composite.
-c
--=-=-=
+c open
+```
 
 A composite can also have a background color. Simply use #color: for this:
--=-=-=
+```
 c := RSCanvas new.
 
 box := RSBox new width: 40; height: 10; color: Color blue.
-label := RSLabel new text: 'Hello Roassal3'.
+label := RSLabel new color: Color black; text: 'Hello Roassal3'.
 RSLocation new above; move: box on: label.
 composite := RSComposite new.
 composite color: Color gray.
@@ -29,16 +29,16 @@ composite shapes: { label . box }.
 composite @ RSDraggable.
 
 c add: composite.
-c
--=-=-=
+c open
+```
 
 A padding describes a space between the border of the composite element and the inner shapes. It can be adjusted using the message #padding:
 
--=-=-=
+```
 c := RSCanvas new.
 
 box := RSBox new width: 40; height: 10; color: Color blue.
-label := RSLabel new text: 'Hello Roassal3'.
+label := RSLabel new color: Color black; text: 'Hello Roassal3'.
 RSLocation new above; move: box on: label.
 composite := RSComposite new.
 composite color: Color gray.
@@ -47,11 +47,11 @@ composite @ RSDraggable.
 composite padding: 10.
 
 c add: composite.
-c
--=-=-=
+c open
+```
 
 Inner nodes can be layouted:
--=-=-=
+```
 classes := RSObject withAllSubclasses.
 
 c := RSCanvas new.
@@ -74,11 +74,12 @@ classes do: [ :cls |
 
 RSFlowLayout on: c shapes.
 
-c @ RSControlsCanvas
--=-=-=
+c @ RSCanvasController.
+c open
+```
 
 Lines can be added between composite. Here is an example:
--=-=-=
+```
 classes := RSObject withAllSubclasses.
 
 c := RSCanvas new.
@@ -107,8 +108,9 @@ RSEdgeBuilder orthoVertical
 
 RSTreeLayout on: c nodes.
 
-c @ RSControlsCanvas
--=-=-=
+c @ RSCanvasController.
+c open.
+```
 "
 Class {
 	#name : #RSComposite,
@@ -123,6 +125,68 @@ Class {
 	#category : #'Roassal3-Shapes-Bounding'
 }
 
+{ #category : #'public - creation' }
+RSComposite class >> model: anObject forIt: twoArgsBlock [
+	"This method returns a collection (RSGroup) of composite shapes, for which each shape is defined using the the twoArgsBlock. The variable twoArgsBlock points to a two argument block. The first argument is the object model, and the second argument is the composite.
+	
+For example:
+```
+c := RSCanvas new.
+
+compoShape := RSComposite model: 'Hello' forIt: [ :title :composite |
+	composite add: (RSLabel text: title).
+	composite add: (RSCircle new size: 20).
+	RSVerticalLineLayout new alignCenter; on: composite shapes.
+	composite @ RSDraggable ].
+c add: compoShape.
+
+c open 
+```	
+"
+
+	^ (self models: (Array with: anObject) forEach: twoArgsBlock) first
+]
+
+{ #category : #'public - creation' }
+RSComposite class >> models: someObjects forEach: twoArgsBlock [
+	"This method returns a collection (RSGroup) of composite shapes, for which each shape is defined using the the oneArgBlock. 
+	
+For example:
+```
+classes := ByteArray withAllSubclasses.
+
+c := RSCanvas new.
+
+boxes := RSComposite models: classes forEach: [ :cls :c |
+	c add: (RSLabel new text: cls name).
+	c add: (RSBox new size: cls numberOfLinesOfCode sqrt).
+	c model: cls.
+	RSVerticalLineLayout new alignCenter; on: c shapes.
+	c @ RSDraggable.
+].
+
+c addAll: boxes. 
+RSFlowLayout on: c shapes.
+
+lb := RSLineBuilder line.
+lb withVerticalAttachPoint.
+lb shapes: boxes.
+lb connectFrom: #superclass.
+
+RSTreeLayout on: c nodes.
+c @ RSCanvasController.
+c open
+```	
+"
+
+	^ someObjects
+		  collect: [ :obj | 
+				| t |
+		  		t := twoArgsBlock valueWithArguments: (Array with: obj with: (self model: obj)).
+				t adjustToChildren ]
+		  as: RSGroup
+]
+
 { #category : #adding }
 RSComposite >> addBasicShape: aShape [
 	self shapes add: aShape
@@ -131,6 +195,12 @@ RSComposite >> addBasicShape: aShape [
 { #category : #adding }
 RSComposite >> addFixedShape: aShape [
 	self error: 'Composite can not add a fixed shape'
+]
+
+{ #category : #adding }
+RSComposite >> addRecursivelyIn: aCollection [
+	super addRecursivelyIn: aCollection.
+	self shapes do: [ :n | n addRecursivelyIn: aCollection ]
 ]
 
 { #category : #adding }
@@ -144,7 +214,7 @@ RSComposite >> addShape: aShape before: otherShape [
 
 { #category : #public }
 RSComposite >> adjustToChildren [
-"Recompute the encompassing rectangle of the composite shape from the positio of the children. 
+"Recompute the encompassing rectangle of the composite shape from the position of the children. 
 
 In case one wishes to have a padding in the composite, the method #padding: must be called _after_ calling #adjustToChildren
 
@@ -388,7 +458,7 @@ RSComposite >> shapesFromModel: anObject using: aBlock [
 		  super shapesFromModel: anObject using: aBlock ]
 ]
 
-{ #category : #edges }
+{ #category : #'edges - deprecated' }
 RSComposite >> updateConnectedEdges [
 	"Update the edge connected to elements contained in the composite. This happens when a shape is drag and dropped. For example:
 	
@@ -414,8 +484,40 @@ c @ RSCanvasController
 -=-=-=-=-=-=-=-=-=
 "
 	self shouldUpdateEdges 
-		ifTrue: [ connectedEdges do: [ :edge | edge update ] ].
+		ifTrue: [ connectedLines do: [ :edge | edge update ] ].
 	self children do: [ :child | 
 		child isNode
 			ifTrue: [ child updateConnectedEdges ] ]
+]
+
+{ #category : #lines }
+RSComposite >> updateConnectedLines [
+	"Update the lines connected to elements contained in the composite. This happens when a shape is drag and dropped. For example:
+	
+```
+c := RSCanvas new.
+
+c add: (RSLabel new text: 'I am connected to'; model: 0).
+c shapes first translateBy: -50 @ 50.
+
+g := RSGroup new.
+g add: (RSLabel new text: '1'; model: 1).
+g add: (RSLabel new text: '2'; model: 2).
+RSHorizontalLineLayout on: g.
+composite := g asShape.
+composite color: Color lightBlue.
+c add: composite.
+
+c shapes @ RSDraggable.
+
+c add: (RSLine new color: Color red; from: c shapes first; to: g first).
+c add: (RSLine new color: Color red; from: c shapes first; to: g second).
+c @ RSCanvasController
+```
+"
+	self shouldUpdateLines 
+		ifTrue: [ connectedLines do: [ :line | line update ] ].
+	self children do: [ :child | 
+		child isNode
+			ifTrue: [ child updateConnectedLines ] ]
 ]

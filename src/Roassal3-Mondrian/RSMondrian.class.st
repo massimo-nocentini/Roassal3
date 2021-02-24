@@ -1,3 +1,14 @@
+"
+```
+m := RSMondrian new.
+m shape label color: Color blue translucent.
+m nodes: Collection withAllSubclasses.
+m line connectToAll: #dependentClasses.
+m normalizeFontSize: #numberOfMethods.
+m layout force.
+m  
+```
+"
 Class {
 	#name : #RSMondrian,
 	#superclass : #Object,
@@ -5,24 +16,26 @@ Class {
 		'canvas',
 		'layoutBuilder',
 		'shapeBuilder',
-		'edgeBuilder'
+		'nodesForLayout',
+		'lineBuilder',
+		'depth'
 	],
 	#category : #'Roassal3-Mondrian-Core'
 }
 
 { #category : #'building - graph' }
 RSMondrian >> applyLayout [
-	layoutBuilder on: canvas nodes
+	layoutBuilder on: nodesForLayout
 ]
 
 { #category : #'building - graph' }
 RSMondrian >> arrowedLine [
-	edgeBuilder := RSEdgeBuilder arrowedLineWithOffset.
-	edgeBuilder canvas: canvas.
-	edgeBuilder shapes: canvas nodes.
-	edgeBuilder withBorderAttachPoint.
-	edgeBuilder color: self defaultLineColor.
-	^ edgeBuilder
+	lineBuilder := RSLineBuilder arrowedLineWithOffset.
+	lineBuilder canvas: canvas.
+	lineBuilder shapes: canvas nodes.
+	lineBuilder withBorderAttachPoint.
+	lineBuilder color: self defaultLineColor.
+	^ lineBuilder
 ]
 
 { #category : #'public - opening and public' }
@@ -70,7 +83,25 @@ RSMondrian >> initialize [
 	super initialize.
 	shapeBuilder := RSShapeBuilder new.
 	layoutBuilder := RSLayoutBuilder new.
-	canvas := RSCanvas new @ RSCanvasController
+	canvas := RSCanvas new @ RSCanvasController.
+	nodesForLayout := RSGroup new.
+	depth := 0
+]
+
+{ #category : #visualization }
+RSMondrian >> inspectorVisualization [
+	<inspectorPresentationOrder: 90 title: 'Mondrian'>
+	self build.
+	^ SpRoassal3InspectorPresenter new
+		canvas: self canvas;
+		yourself
+
+]
+
+{ #category : #visualization }
+RSMondrian >> inspectorVisualizationContext: aContext [
+  
+  aContext withoutEvaluator
 ]
 
 { #category : #'building - graph' }
@@ -80,11 +111,11 @@ RSMondrian >> layout [
 
 { #category : #'building - graph' }
 RSMondrian >> line [
-	edgeBuilder := RSEdgeBuilder line.
-	edgeBuilder canvas: canvas.
-	edgeBuilder shapes: canvas nodes.
-	edgeBuilder color: self defaultLineColor.
-	^ edgeBuilder
+	lineBuilder := RSLineBuilder line.
+	lineBuilder canvas: canvas.
+	lineBuilder shapes: (canvas nodes select: #hasModel).
+	lineBuilder color: self defaultLineColor.
+	^ lineBuilder
 ]
 
 { #category : #'building - graph' }
@@ -117,16 +148,17 @@ RSMondrian >> nodes: objects [
 	b open
 	"
 	
-	| shapes |
+	| nodes |
 	self assert: [ objects isCollection ] description: 'You need to provide a collection to #nodes:'.
-	shapes := self shapesOn: objects.
-	canvas addAll: shapes.
+	nodes := self shapesOn: objects.
+	canvas addAll: nodes.
 "	self currentFrame addShapes: els.
 	canvas addAll: els.
 	self resetShapeBuilder.
 	self resetLayoutBuilder.
 	self resetInteraction."
-	^ shapes
+	nodesForLayout addAll: nodes.
+	^ nodes
 ]
 
 { #category : #'building - graph' }
@@ -134,33 +166,37 @@ RSMondrian >> nodes: objects forEach: oneArgBlock [
 	"Add a new node represengint an object to the view. The node is a container for other objects.
 	
 	For example:
-	b := RTMondrian new.
-	b nodes: (1 to: 10).
-	b layout force.
-	b open
-	
-	
-	Another example:
-	b := RTMondrian new.
-	b shape box size: #numberOfMethods.
-	b nodes: Collection withAllSubclasses.
-	b layout flow.
-	b open
+```
+b := RSMondrian new.
+b nodes: (1 to: 10).
+b layout force.
+b open
+```	
 	
 	Another example:
-	b := RTMondrian new.
-	b shape box size: #numberOfMethods.
-	b nodes: Collection withAllSubclasses.
-	b edges connectFrom: #superclass.
-	b normalizer 
-		normalizeSize: #numberOfMethods;
-		normalizeColor: #numberOfMethods.
-	b layout cluster.
-	b open
+```
+b := RSMondrian new.
+b shape box size: #numberOfMethods.
+b nodes: Collection withAllSubclasses.
+b layout flow.
+b open
+```
+	
+	Another example:
+```
+b := RSMondrian new.
+b shape box size: #numberOfMethods.
+b nodes: Collection withAllSubclasses.
+b line connectFrom: #superclass.
+b normalizeSize: #numberOfMethods.
+b normalizeColor: #numberOfMethods.
+b layout cluster.
+b open
+```
 	"
 	
-	| shapes compo old previousShapeBuilder |
-	shapes := RSGroup new.
+	| nodes compo old previousShapeBuilder oldNodesToLayout |
+	nodes := RSGroup new.
 	objects do: [ : obj |
 		previousShapeBuilder := shapeBuilder.
 		
@@ -168,26 +204,50 @@ RSMondrian >> nodes: objects forEach: oneArgBlock [
 		compo color: shapeBuilder color.
 		compo model: obj.
 		old := self canvas.
+		oldNodesToLayout := nodesForLayout.
+		nodesForLayout := RSGroup new.
 		self canvas: compo.
+		
+		depth := depth + 1.
 		
 		shapeBuilder := RSShapeBuilder new.
 		oneArgBlock rsValue: obj.
-		shapes add: compo.
+		nodes add: compo.
 		self build.
+		nodesForLayout := oldNodesToLayout.
 		compo adjustToChildren.
 		compo padding: 5.
 		compo pushBackEdges.
 		self canvas: old.
 		shapeBuilder := previousShapeBuilder.
+		depth := depth - 1
 	].
-	canvas addAll: shapes.
-	shapes @ RSPopup @ RSDraggable.
-	^ shapes
+	canvas addAll: nodes.
+	nodes @ RSPopup.
+	depth = 0 ifTrue: [ nodes @ RSDraggable ].
+	nodesForLayout addAll: nodes.
+	^ nodes
 ]
 
 { #category : #'public - normalizer' }
 RSMondrian >> normalizeColor: oneArgBlock [
 	RSNormalizer color
+		shapes: self canvas nodes;
+		normalize: oneArgBlock
+]
+
+{ #category : #'public - normalizer' }
+RSMondrian >> normalizeColor: oneArgBlock from: fromColor to: toColor [
+	RSNormalizer color
+		shapes: self canvas nodes;
+		from: fromColor;
+		to: toColor;
+		normalize: oneArgBlock
+]
+
+{ #category : #'public - normalizer' }
+RSMondrian >> normalizeFontSize: oneArgBlock [
+	RSNormalizer fontSize
 		shapes: self canvas nodes;
 		normalize: oneArgBlock
 ]
@@ -241,21 +301,21 @@ RSMondrian >> openWithTitle: aTitle [
 
 { #category : #'building - graph' }
 RSMondrian >> orthoHorizontalline [
-	edgeBuilder := RSEdgeBuilder orthoHorizontal.
-	edgeBuilder canvas: canvas.
-	edgeBuilder shapes: canvas nodes.
-	edgeBuilder color: self defaultLineColor.
-	^ edgeBuilder
+	lineBuilder := RSLineBuilder orthoHorizontal.
+	lineBuilder canvas: canvas.
+	lineBuilder shapes: canvas nodes.
+	lineBuilder color: self defaultLineColor.
+	^ lineBuilder
 ]
 
 { #category : #'building - graph' }
 RSMondrian >> orthoVerticalLine [
-	edgeBuilder := RSEdgeBuilder orthoVertical.
-	edgeBuilder canvas: canvas.
-	edgeBuilder shapes: canvas nodes.
-	edgeBuilder withVerticalAttachPoint.
-	edgeBuilder color: self defaultLineColor.
-	^ edgeBuilder
+	lineBuilder := RSLineBuilder orthoVertical.
+	lineBuilder canvas: canvas.
+	lineBuilder shapes: canvas nodes.
+	lineBuilder withVerticalAttachPoint.
+	lineBuilder color: self defaultLineColor.
+	^ lineBuilder
 ]
 
 { #category : #accessing }
@@ -267,7 +327,8 @@ RSMondrian >> shape [
 RSMondrian >> shapesOn: someObjects [
 	| ss |
 	ss := shapeBuilder shapesOn: someObjects.
-	ss @ RSPopup @ RSDraggable.
+	depth = 0 ifTrue: [ ss @ RSDraggable ].
+	ss @ RSPopup.
 	^ ss
 ]
 
