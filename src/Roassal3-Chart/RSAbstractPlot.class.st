@@ -39,6 +39,12 @@ RSAbstractPlot >> color: aColor [
 	self shape color: aColor
 ]
 
+{ #category : #public }
+RSAbstractPlot >> computeColor [
+	"Return the color used by the chart element. The color is computed from the chart and from the colorBlock variable"
+	^ self color ifNil: [ chart colorFor: self ].
+]
+
 { #category : #initialization }
 RSAbstractPlot >> defaultShape [
 	^ self subclassResponsibility
@@ -126,6 +132,11 @@ RSAbstractPlot >> minValueY [
 	^ self definedValuesY min
 ]
 
+{ #category : #'accessing - computed' }
+RSAbstractPlot >> scalePoint: aPoint [
+	^ (xScale scale: aPoint x) @ (yScale scale: aPoint y)
+]
+
 { #category : #'public - shape' }
 RSAbstractPlot >> shape [
 	^ shape
@@ -141,7 +152,7 @@ RSAbstractPlot >> x: aCollection y: aCollection2 [
 	"Define a plot with the X and Y coordinates. Both X and Y are collections of the same size.
 	
 	For example:
--=-=-=-=-=-=-=-=-=
+```
 x := (-3.14 to: 3.14 by: 0.01).
 c := RSChart new.
 
@@ -154,11 +165,15 @@ p x: x y: x cos * 0.18.
 c addPlot: p.
 
 c addDecoration: RSHorizontalTick new.
-c addDecoration: (RSVerticalTick new asFloat).
-c addDecoration: (RSYMarkerDecoration new ).
+c addDecoration: RSVerticalTick new asFloat.
+c addDecoration: RSYMarkerDecoration new.
 c 
--=-=-=-=-=-=-=-=-=
+```
 	"
+	self assert: [ aCollection notNil ] description: 'Cannot be nil'.
+	self assert: [ aCollection2 notNil ] description: 'Cannot be nil'.
+	self assert: [ aCollection size = aCollection2 size ] description: 'The two collections must have the same size'.
+ 	
 	xValues := aCollection.
 	yValues := aCollection2
 ]

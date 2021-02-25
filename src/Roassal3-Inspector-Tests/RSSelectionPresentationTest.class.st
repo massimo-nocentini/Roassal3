@@ -22,6 +22,18 @@ RSSelectionPresentationTest >> testBasic [
 ]
 
 { #category : #tests }
+RSSelectionPresentationTest >> testCanvasInspect [
+	| c  window |
+	c := RSCanvas new.
+	c add: RSBox new.
+	window := c inspect.
+	window class = RSCanvas 
+		ifTrue: [ c morph window delete ]
+		ifFalse: [ window delete ]
+	
+]
+
+{ #category : #tests }
 RSSelectionPresentationTest >> testWithNoCanvas [
 
 	| shapes |

@@ -199,12 +199,12 @@ RSAnimationExamples >> example05ElasticEllipses [
 			ang := random next * Float pi * 2.
 			shape position: radius * (ang cos @ ang sin).
 			overlapped := canvas nodes anySatisfy: [ :other |
-				(other position dist: shape position) < 
+				(other position distanceTo: shape position) < 
 					((shape radius + other radius) * 1.4)  ].
 			overlapped ifFalse: [ 
 				canvas add: shape.
 				shape propertyAt: #radius put: shape radius.
-				shape color: (color scale: (shape position dist: 0@0)/250 ) ].
+				shape color: (color scale: (shape position distanceTo: 0@0)/250 ) ].
 		].
 		canvas newAnimation
 			easing: RSEasing elasticOut;
@@ -1021,7 +1021,7 @@ RSAnimationExamples >> example17Flor [
 			m := s model value.
 			angle := (i + (angleSp sin * m)) degreesToRadians.
 			s position: m * (angle cos @ angle sin).
-			dist := s position dist: 0@0.
+			dist := s position distanceTo: 0@0.
 			diameter := dia2 scale: (dia1 scale: dist) sin.
 			s extent: diameter asPoint.
 	 	].
@@ -1958,7 +1958,7 @@ RSAnimationExamples >> example33AnimatedLayout [
 			model: m;
 		yourself ].
 	c addAll: shapes.
-	RSEdgeBuilder line 
+	RSLineBuilder line 
 		canvas: c;
 		objects: objects;
 		connectFrom: [ :value | value //2 ] to: #yourself.
@@ -2014,7 +2014,7 @@ RSAnimationExamples >> example34ForceLayout [
 		e
 		 ].
 
-	RSEdgeBuilder line
+	RSLineBuilder line
 		canvas: c;
 		shapes: classes;
 		color: (Color purple alpha: 0.2);
@@ -2109,7 +2109,7 @@ RSAnimationExamples >> example36Title [
 	c := RSCanvas new.
 	t1 := 'Roassal3'.
 	t2 := 'It is a new agile visualization engine
-for Pharo 7 and Pharo 8.'.
+for Pharo 8 and Pharo 9.'.
 	lblbase := RSLabel new
 		color: Color white;
 		fontSize: 30;
@@ -2233,7 +2233,7 @@ RSAnimationExamples >> example37RectangleForceLayout [
 			color: (color scale: cls);
 			size: 10;
 			yourself ] as: RSGroup.
-	RSEdgeBuilder line
+	RSLineBuilder line
 		canvas: canvas;
 		shapes: classes;
 		color: (Color blue alpha: 0.5);

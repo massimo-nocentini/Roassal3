@@ -3,16 +3,19 @@ I am an ellipse shape
 
 Here an example:
 
+```Smalltalk
 c := RSCanvas new.
 (30 to: 150 by: 10) do: [ :nb |
-	b := RSBox new size: nb.
-	c add: b ].
+b := RSEllipse new width: nb; height: nb / 2.
+c add: b ].
 RSFlowLayout on: c nodes.
-c @ RSControlsCanvas
+c @ RSCanvasController.
+c open
+```
 "
 Class {
 	#name : #RSEllipse,
-	#superclass : #RSBoundingShape,
+	#superclass : #RSCircularShape,
 	#category : #'Roassal3-Shapes-Bounding'
 }
 
@@ -30,8 +33,8 @@ RSEllipse >> geometry [
 	e = (0@0) ifTrue: [ ^ p asGPoint ].
 	^ GEllipse 
 		center: p
-		vertex: p + (0@ e y)
-		coVertex:p + (e x@ 0) 
+		vertex: p + (e x@ 0)
+		coVertex: p + (0@ e y)
 ]
 
 { #category : #testing }

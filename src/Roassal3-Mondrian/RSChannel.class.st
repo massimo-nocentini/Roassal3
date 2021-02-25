@@ -4,10 +4,11 @@ Class {
 	#instVars : [
 		'inputGroup',
 		'outputGroup',
-		'effect',
 		'isClicked',
 		'highlightable',
-		'color'
+		'color',
+		'isClickable',
+		'marksGoUpward'
 	],
 	#category : #'Roassal3-Mondrian-Connections'
 }
@@ -24,6 +25,7 @@ RSChannel >> build [
 		self doUnhighlight.
 		evt signalUpdate ].
 
+	isClickable ifFalse: [ ^ self ].
 	inputGroup when: RSMouseClick do: [ :evt | 
 		isClicked
 			ifTrue: [ self unmark: evt shape. self doUnmark ]
@@ -40,6 +42,7 @@ RSChannel >> color [
 { #category : #accessing }
 RSChannel >> color: aColor [
 	color := aColor.
+	highlightable := RSHighlightable new.
 	highlightable highlightColor: aColor
 
 ]
@@ -51,7 +54,6 @@ RSChannel >> defaultColor [
 
 { #category : #'private - highlight' }
 RSChannel >> doHighlight [
-	highlightable highlightColor: self color.
 	highlightable doHighlightShapes: outputGroup
 ]
 
@@ -83,8 +85,11 @@ RSChannel >> getAllMarksFrom: aShape [
 RSChannel >> initialize [
 	super initialize.
 	isClicked := false.
-	highlightable := RSHighlightable new.
+	isClickable := true.
 	self color: self defaultColor.
+	
+	"Marks must go downward"
+	marksGoUpward := false.
 ]
 
 { #category : #public }
@@ -96,6 +101,11 @@ RSChannel >> input: aCollection [
 { #category : #accessing }
 RSChannel >> isMarked: shape [
 	^ shape hasProperty: self symbolMarker
+]
+
+{ #category : #public }
+RSChannel >> makeNotClickable [
+	isClickable := false
 ]
 
 { #category : #'private - highlight' }
@@ -124,10 +134,17 @@ RSChannel >> mark: shape [
 	
 	"We must not forget the first mark, half must be added, to have exactly the mark below the shape (not overlapping)"
 	deltaY := deltaY + (self markHeight / 2).
+	marksGoUpward ifTrue: [ deltaY := deltaY negated ].
 	aMark translateTo: position + (0 @ deltaY).
 
 	"Register the mark in the shape"
 	shape propertyAt: self symbolMarker put: aMark
+]
+
+{ #category : #accessing }
+RSChannel >> markGoUp [
+
+	marksGoUpward := true
 ]
 
 { #category : #'private - highlight' }

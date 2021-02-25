@@ -58,6 +58,35 @@ Class {
 	#category : #'Roassal3-Interaction-Core'
 }
 
+{ #category : #accessing }
+RSLabeled class >> highlightable [
+	"Create a label interaction that is highligtable
+```
+canvas := RSCanvas new.
+
+someColors := { Color red . Color blue . Color green }.
+shapes := (someColors collect: [ :aColor | 
+	RSEllipse new size: 30; model: aColor; color: aColor ]) asGroup.
+
+canvas addAll: shapes.
+
+shapes @ RSDraggable.
+shapes @ RSLabeled highlightable.
+
+RSHorizontalLineLayout on: shapes.
+
+canvas @ RSCanvasController
+```	
+"
+	^ self new highlightable
+]
+
+{ #category : #accessing }
+RSLabeled class >> text: aText [
+	"Utility method to define a labeled interaction with a text"
+	^ self new text: aText
+]
+
 { #category : #hooks }
 RSLabeled >> createLabel: aShape [
 	| label color set targetLabel |
@@ -151,6 +180,11 @@ RSLabeled >> initialize [
 { #category : #accessing }
 RSLabeled >> location [
 	^ location
+]
+
+{ #category : #accessing }
+RSLabeled >> locationDo: aBlock [
+	aBlock value: location
 ]
 
 { #category : #accessing }

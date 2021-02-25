@@ -35,6 +35,28 @@ RSCanvasTest >> testAddShapeBefore [
 	self assert: canvas shapes asArray equals: { shape1 . shape2 }
 ]
 
+{ #category : #tests }
+RSCanvasTest >> testDeepNodes [
+
+	| c compo box |
+	c := RSCanvas new.
+
+	compo := RSComposite new.
+	box := RSBox new.
+	compo addShape: box.
+	compo adjustToChildren.
+
+	c add: compo.
+
+	self assert: c numberOfNodes equals: 1.
+	self assert: c numberOfDeepNodes equals: 2.
+
+	self assert: c deepNodes size equals: 2.
+	self assert: (c deepNodes includesAll: { 
+				 box.
+				 compo })
+]
+
 { #category : #running }
 RSCanvasTest >> testDrawCanvas [
 	canvas addShape: (RSBox new
@@ -194,7 +216,7 @@ RSCanvasTest >> testNodesShapesAndEdges [
 	n3 := RSEllipse new size: 10; model: 3.
 	nodes := Array with: n1 with: n2 with: n3.
 	canvas addAll: nodes.
-	eb := RSEdgeBuilder line.
+	eb := RSLineBuilder line.
 	eb canvas: canvas.
 	eb useAssociations: (Array with: (1 -> 2) with: (2 -> 3) with: (3 -> 1)).
 	self assert: canvas shapes size equals: 6.
@@ -321,6 +343,9 @@ RSCanvasTest >> testPushFront [
 
 	c pushFront: blueBox.
 	self assert: c shapes asArray equals: { redBox . blueBox }.
+	
+	c pushBack: blueBox.
+	self assert: c shapes asArray equals: { blueBox . redBox }.
 ]
 
 { #category : #'tests - shapes ordering' }

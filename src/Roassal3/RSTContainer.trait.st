@@ -19,8 +19,7 @@ RSTContainer >> add: aShape [
 
 { #category : #'adding nodes edges' }
 RSTContainer >> addAll: aCollection [
-	"Add a collection of shapes to the canvas
-	aCollection of shapes, a shape can be a line or can be a node"
+	"Add a collection of shapes to the canvas. The argument is a collection of shapes."
 	self assert: [ aCollection isCollection ] description: 'Need to provide a collection as argument'.
 	self assert: [ aCollection allSatisfy: [ :e | e isKindOf: RSShape ] ] description: 'Need to provide a collection of RSShape'.
 	
@@ -38,6 +37,12 @@ RSTContainer >> addAllShapes: aCollection [
 { #category : #'adding nodes edges' }
 RSTContainer >> addEdge: aShape [
 	self edges add: aShape.
+	^ aShape
+]
+
+{ #category : #'adding nodes edges' }
+RSTContainer >> addLine: aShape [
+	self lines add: aShape.
 	^ aShape
 ]
 
@@ -113,6 +118,15 @@ RSTContainer >> edges [
 ]
 
 { #category : #accessing }
+RSTContainer >> lines [
+	"Return all the lines contained in the canvas."
+	^ self privateEdges
+		ifNil: [ | res |
+			self privateEdges: (res := RSGroup new).
+			res ]
+]
+
+{ #category : #accessing }
 RSTContainer >> nodes [ 
 	"Return all the shapes except lines contained in the canvas."
 	^ self privateNodes
@@ -126,7 +140,7 @@ RSTContainer >> numberOfEdges [
 	"Return the number of edges contained in the container"
 	^ self privateEdges
 		ifNil: [ 0 ]
-		ifNotNil: [ :edges | edges size ]
+		ifNotNil: [ :aGroupOfEdges | aGroupOfEdges size ]
 ]
 
 { #category : #accessing }
@@ -134,7 +148,7 @@ RSTContainer >> numberOfNodes [
 	"Return the number of nodes contained in the container"
 	^ self privateNodes
 		ifNil: [ 0 ]
-		ifNotNil: [ :nodes | nodes size ]
+		ifNotNil: [ :aGroupOfNodes | aGroupOfNodes size ]
 ]
 
 { #category : #private }

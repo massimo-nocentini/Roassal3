@@ -53,7 +53,7 @@ RSHighlightableTest >> testWithEdges [
 			withBorder;
 			yourself ].
 	shapes := shapes asGroup.
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
@@ -61,8 +61,8 @@ RSHighlightableTest >> testWithEdges [
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
 	
-	interaction := RSHighlightable defaultRed.
-	interaction withEdges.
+	interaction := RSHighlightable red.
+	interaction withLines.
 	shapes @ interaction.
 	
 	self assert: (shapes second outgoingEdges collect: #color) asSet size equals: 1.
@@ -91,7 +91,7 @@ RSHighlightableTest >> testWithEdges2 [
 			withBorder;
 			yourself ].
 	shapes := shapes asGroup.
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
@@ -99,7 +99,7 @@ RSHighlightableTest >> testWithEdges2 [
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
 	
-	interaction := RSHighlightable withEdges.
+	interaction := RSHighlightable withLines.
 	shapes @ interaction.
 	
 	self assert: (shapes second outgoingEdges collect: #color) asSet size equals: 1.

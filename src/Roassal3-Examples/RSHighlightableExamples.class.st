@@ -23,13 +23,13 @@ RSHighlightableExamples >> example01Basic [
 			color: (color scale: m);
 			yourself.
 		 ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
 	canvas edges do: #withBorder.
 	canvas addAll: shapes.
-	canvas shapes @ RSHighlightable defaultRed.
+	canvas shapes @ RSHighlightable red.
 	RSClusterLayout on: shapes.
 	canvas zoomToFit.
 	^ canvas
@@ -40,8 +40,8 @@ RSHighlightableExamples >> example02ElementEdges [
 	<script: 'self new example02ElementEdges open'>
 	| canvas shapes interaction color |
 	canvas := RSCanvas new.
-	interaction := RSHighlightable defaultRed
-		withEdges;
+	interaction := RSHighlightable red
+		withLines;
 		yourself.
 	color := RSColorPalette diverging rdylbu3.
 	shapes := (1 to: 20) collect: [ :i |
@@ -52,13 +52,13 @@ RSHighlightableExamples >> example02ElementEdges [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
 	canvas addAll: shapes.
 	canvas edges do: #withBorder.
-	canvas edges @ RSHighlightable defaultRed.
+	canvas edges @ RSHighlightable red.
 	canvas nodes @ interaction.
 	RSClusterLayout on: shapes.
 	canvas zoomToFit.
@@ -80,7 +80,7 @@ RSHighlightableExamples >> example03Interactive [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
@@ -88,8 +88,8 @@ RSHighlightableExamples >> example03Interactive [
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
 	
-	interaction := RSHighlightable defaultRed.
-	interaction withEdges.
+	interaction := RSHighlightable red.
+	interaction withLines.
 	update := [ interaction doHighlight: shapes atRandom ].
 	update value.
 	canvas newAnimation repeat when: RSAnimationLoopEvent do: update.
@@ -114,14 +114,14 @@ RSHighlightableExamples >> example04Interactive [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
 	
-	interaction := RSHighlightable defaultRed.
+	interaction := RSHighlightable red.
 	bool := true.
 	update := [
 		interaction doHighlightShapes: (shapes select: [ :e | bool = e model even ]).
@@ -148,7 +148,7 @@ RSHighlightableExamples >> example05Border [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
@@ -175,7 +175,7 @@ RSHighlightableExamples >> example06IterateNext [
 			size: 30;
 			labeled;
 			yourself ] as: RSGroup.
-	edges := RSEdgeBuilder line
+	edges := RSLineBuilder line
 		shapes: numbers;
 		connectFrom: [ :i | i // 2 ].
 	canvas
@@ -192,7 +192,7 @@ RSHighlightableExamples >> example06IterateNext [
 	numbers @ (RSDraggableForce new layout: layout).
 
 	"Set up highlighting interactions"
-	highlightableForBoxes := RSHighlightable defaultRed.
+	highlightableForBoxes := RSHighlightable red.
 	highlightableForLabels := RSHighlightable new
 		propertyKey: #exampleKey;
 		when: RSHighlightEvent do: [ :evt | evt shape bold ];
@@ -232,7 +232,7 @@ RSHighlightableExamples >> example07HighlightButtons [
 	<script: 'self new example07HighlightButtons open'>
 	| canvas mouseOver selectedButton |
 	canvas := RSCanvas new.
-	selectedButton := RSHighlightable defaultRed.
+	selectedButton := RSHighlightable red.
 
 	mouseOver:= RSHighlightable new.
 	mouseOver highlightColor: [ :shape | 
@@ -308,7 +308,7 @@ RSHighlightableExamples >> example08DependendMethods [
 			@ popup;
 			draggable;
 			yourself.
-		RSEdgeBuilder orthoVertical 
+		RSLineBuilder orthoVertical 
 			withVerticalAttachPoint;
 			canvas: pkg;
 			shapes: pkg nodes;
@@ -353,7 +353,7 @@ RSHighlightableExamples >> example09ArrowedLines [
 		highlightBorder: (RSBorder new
 			width: 2;
 			yourself);
-		withEdges;
+		withLines;
 		yourself.
 
 	color := RSColorPalette diverging rdylbu3.
@@ -365,7 +365,7 @@ RSHighlightableExamples >> example09ArrowedLines [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder arrowedLine
+	RSLineBuilder arrowedLine
 		withBorderAttachPoint;
 		canvas: canvas;
 		shapes: shapes;
@@ -393,13 +393,13 @@ RSHighlightableExamples >> example10ElasticBox [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
-	high := RSHighlightable defaultRed.
+	high := RSHighlightable red.
 	elastic := RSElasticBox new.
 	elastic
 		when: RSSelectionStartEvent do: [ :evt |
@@ -426,13 +426,13 @@ RSHighlightableExamples >> example11ElasticBoxWithCustomDraggable [
 			withBorder;
 			color: (color scale: i) ;
 			yourself ].
-	RSEdgeBuilder line
+	RSLineBuilder line
 		shapes: shapes;
 		canvas: canvas;
 		connectFrom: [ :n | n // 2 ].
 	canvas addAll: shapes.
 	RSClusterLayout on: shapes.
-	high := RSHighlightable defaultRed.
+	high := RSHighlightable red.
 	selectedShapes := #().
 	elastic := RSElasticBox new.
 	elastic
@@ -453,4 +453,46 @@ RSHighlightableExamples >> example11ElasticBoxWithCustomDraggable [
 	elastic targetShapes: canvas nodes.
 	canvas @ elastic.
 	^ canvas
+]
+
+{ #category : #elastic }
+RSHighlightableExamples >> example12ShowingEdges [
+	<script: 'self new example12ShowingEdges open'>
+	| canvas shapes color interaction cpController|
+	canvas := RSCanvas new.
+
+	color := RSColorPalette sequential bupu3.
+	shapes := (1 to: 20) collect: [ :m |
+		RSBox new
+			size: 10;
+			model: m;
+			draggable;
+			withBorder;
+			color: (color scale: m);
+			yourself.
+		 ].
+	
+	RSLineBuilder line
+		canvas: canvas;
+		shapes: shapes;
+		connectFrom: [ :n | n // 2 ].
+	canvas addAll: shapes.
+	cpController := RSBlockCPController new
+		block: [ :line | 
+			Array
+				with: line from position
+				with: 0 @ 0
+				with: line to position ];
+		yourself.
+	interaction := RSHighlightable 
+		showEdges: [:model | {model + 1. model + 2. model + 3} ] 
+		using: (RSBezier new
+			color: Color red;
+			width: 2;
+			controlPointsController: cpController
+			yourself	).
+	canvas nodes @ interaction.
+	RSClusterLayout on: shapes.
+	canvas zoomToFit.
+	^ canvas 
 ]

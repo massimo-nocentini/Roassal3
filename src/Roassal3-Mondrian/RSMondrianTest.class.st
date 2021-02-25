@@ -7,7 +7,7 @@ Class {
 	#category : #'Roassal3-Mondrian-Tests'
 }
 
-{ #category : #tests }
+{ #category : #running }
 RSMondrianTest >> setUp [
 	super setUp.
 	m := RSMondrian new.
@@ -60,6 +60,39 @@ RSMondrianTest >> testColoredNodesForEach [
 ]
 
 { #category : #tests }
+RSMondrianTest >> testComposingMondrian [
+
+	| c compo m2 nodes |
+	c := RSCanvas new.
+	compo := RSComposite new.
+
+	m := RSMondrian new.
+	m canvas: compo.
+	m shape box size: 10.
+	m nodes: (1 to: 9).
+	m build.
+
+	c add: compo.
+
+	compo color: Color blue.
+	compo adjustToChildren.
+	compo padding: 10.
+
+	compo setAsFixed.
+
+	m2 := RSMondrian new.
+	m2 canvas: c.
+	nodes := m2 nodes: (1 to: 4).
+	m2 line connectFrom: [ :v | v // 2 ].
+	m2 build.
+
+	self assert: c numberOfEdges equals: 3.
+	self assert: c numberOfNodes equals: 5.
+	
+	self assert: (nodes collect: #position) asArray equals:  {(7.5@7.5). (7.5@17.5). (7.5@27.5). (7.5@37.5)}.
+]
+
+{ #category : #tests }
 RSMondrianTest >> testEdges [
 
 	m nodes: (1 to: 100).
@@ -69,6 +102,30 @@ RSMondrianTest >> testEdges [
 	
 	self assert: m canvas numberOfNodes equals: 100.
 	self assert: m canvas numberOfEdges equals: 99.
+]
+
+{ #category : #tests }
+RSMondrianTest >> testNesting [
+
+	| c firstNode subNodes |
+	m := RSMondrian new.
+
+	m nodes: (1 to: 4) forEach: [ :v | 
+		m shape box color: Color blue.
+		m nodes: (1 to: 9) ].
+
+	m build.
+	
+	c := m canvas.
+	
+	self assert: c numberOfNodes equals: 4.
+	
+	firstNode := c nodes first.
+	self assert: firstNode numberOfNodes equals: 9.
+	
+	subNodes := firstNode nodes.
+	self assert: subNodes size equals: 9.
+	self assert: (subNodes collect: #position) asArray equals:  {(-5.0@ -20.0). (5.0@ -20.0). (-5.0@ -10.0). (5.0@ -10.0). (-5.0@0.0). (5.0@0.0). (-5.0@10.0). (5.0@10.0). (-5.0@20.0)}
 ]
 
 { #category : #tests }
@@ -98,4 +155,46 @@ RSMondrianTest >> testNodesForEachAndLAyout [
 		{ m canvas shapes first . m canvas shapes first children first . m canvas shapes first children second }.
 		
 	self assert: m canvas shapes first children first position ~= m canvas shapes first children second position
+]
+
+{ #category : #tests }
+RSMondrianTest >> testWithNullElement [
+
+	| c lb shape nodes |
+	c := RSCanvas new.
+	shape := RSCircle new.
+	c add: shape.
+	shape setAsFixed.
+	
+	m := RSMondrian new.
+	m canvas: c.
+	nodes := m nodes: (1 to: 2).
+	lb := m line.
+	lb connectFrom: [ :v | v // 2 ].
+	m build.
+	
+	self assert: lb fromShapes size equals: 2.
+	self assert: lb fromShapes asArray equals: nodes asArray.
+	self assert: (lb fromShapes noneSatisfy: [ :s | s model isNil ])
+]
+
+{ #category : #tests }
+RSMondrianTest >> testWithNullElementWithFixed [
+
+	| c shape lb nodes |
+	c := RSCanvas new.
+	shape := RSCircle new.
+	c add: shape.
+	shape setAsFixed.
+	
+	m := RSMondrian new.
+	m canvas: c.
+	nodes := m nodes: (1 to: 2).
+	lb := m line.
+	lb connectFrom: [ :v | v // 2 ].
+	m build.
+	
+	self assert: lb fromShapes size equals: 2.
+	self assert: lb fromShapes asArray equals: nodes asArray.
+	self assert: (lb fromShapes noneSatisfy: [ :s | s model isNil ])
 ]

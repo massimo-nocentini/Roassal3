@@ -1,11 +1,14 @@
 # Roassal3
-[![Build Status](https://travis-ci.org/ObjectProfile/Roassal3.svg?branch=master)](https://travis-ci.org/ObjectProfile/Roassal3)
+[![.github/workflows/main.yml](https://github.com/ObjectProfile/Roassal3/workflows/CI/badge.svg)](https://github.com/ObjectProfile/Roassal3/actions)
+[![Coverage Status](https://coveralls.io/repos/github/ObjectProfile/Roassal3/badge.svg?branch=master)](https://coveralls.io/github/ObjectProfile/Roassal3?branch=master)
 
 Roassal3 is an agile visualization engine for [Pharo 8 and Pharo 9](http://pharo.org). Roassal was created to enable interactive data visualization. Sister projects: [Roassal3Documentation](https://github.com/ObjectProfile/Roassal3Documentation), [Roassal3Exporters](https://github.com/ObjectProfile/Roassal3Exporters)
 
+Roassal3 is free and open source, but backed by Object Profile. Commercial support offerings are available, including training and custom consultancy services. Check [RoassalPro](https://github.com/ObjectProfile/Roassal3Documentation/blob/6bbc6a4cb36914e1f79b3a038c32984673a1384f/documentation/RoassalPro.md) for more information.
+
 
 ## Pharo Installations
-Roassal3 is included in Pharo 9. This means that you do not need to install anything else. Pharo 9 contains Roassal 0.9.4. 
+Roassal3 is included in Pharo 9. This means that you do not need to install anything else. Pharo 9 contains Roassal 0.9.6b.
 Two instalation flavors are available: stable and latest (a.k.a bleeding-edge).
 
 ### Stable version
@@ -14,7 +17,7 @@ If you wish to install Roassal in Pharo 8, then execute the following code snipp
 ```Smalltalk
 Metacello new
     baseline: 'Roassal3';
-    repository: 'github://ObjectProfile/Roassal3:v0.9.5';
+    repository: 'github://ObjectProfile/Roassal3:v0.9.6d';
     load.
 ```
 
@@ -110,4 +113,3 @@ _____
 
 Roassal3 is a community effort, and we are really grateful to a number of people. In no particular order, big thanks to:
 Stéphane Ducasse, Martin Días, Pavel Krivanek
-
