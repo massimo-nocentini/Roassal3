@@ -158,10 +158,11 @@ g shapeFromModel: 'hello'
 
 { #category : #accessing }
 RSGroup >> shapeFromModel: anObject using: aBlock [
-	self do: [ :aShape | 
-		(aShape shapeFromModel: anObject using: aBlock) ifNotNil: [ :found | 
-			^ found ] ].
-	^ nil
+	^ self
+		detect:
+			[ :aShape | (aShape shapeFromModel: anObject using: aBlock) isNotNil ]
+		ifFound: [ :found | found ]
+		ifNone: [ nil ]
 ]
 
 { #category : #accessing }
