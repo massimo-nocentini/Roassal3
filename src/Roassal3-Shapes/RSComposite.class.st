@@ -409,12 +409,12 @@ RSComposite >> sessionChanged [
 { #category : #accessing }
 RSComposite >> shapeFromModel: anObject using: aBlock [
 	^ self model
-		  ifNil: [ 
-			  self nodes do: [ :aShape | 
-				  (aShape shapeFromModel: anObject using: aBlock) ifNotNil: [ 
-					  :found | ^ found ] ].
-			  nil ]
-		  ifNotNil: [ :model | super shapeFromModel: anObject using: aBlock ]
+		ifNil: [ self nodes
+				do: [ :aShape | 
+					(aShape shapeFromModel: anObject using: aBlock)
+						ifNotNil: [ :found | ^ found ] ].
+			nil ]
+		ifNotNil: [ super shapeFromModel: anObject using: aBlock ]
 ]
 
 { #category : #'accessing - computed' }
@@ -446,6 +446,14 @@ RSComposite >> shapes [
 { #category : #accessing }
 RSComposite >> shapes: aRSGroup [
 	self children: aRSGroup
+]
+
+{ #category : #'accessing - computed' }
+RSComposite >> shapesFromModel: anObject using: aBlock [
+	^ self model
+		ifNil: [ self nodes
+				flatCollect: [ :aShape | aShape shapesFromModel: anObject using: aBlock ] ]
+		ifNotNil: [ super shapesFromModel: anObject using: aBlock ]
 ]
 
 { #category : #'edges - deprecated' }
